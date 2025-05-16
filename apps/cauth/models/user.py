@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .tariff import Tariff
+from apps.main.models import Language
+
 
 class User(AbstractUser):
 
@@ -12,6 +14,7 @@ class User(AbstractUser):
     phone = models.CharField(max_length=14, default="")
     tariff = models.ForeignKey(Tariff, on_delete=models.SET_NULL, blank=True, null=True)
     balance = models.IntegerField(default=0)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, blank=True, null=True)
 
    
     def __str__(self) -> str:

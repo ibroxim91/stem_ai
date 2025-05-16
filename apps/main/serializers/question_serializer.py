@@ -7,6 +7,8 @@ from apps.main.models.question_group import QuestionGroup
 from django.db.transaction import atomic
 from rest_framework.exceptions import ValidationError
 from django.shortcuts import get_object_or_404
+from .add_language_for_data import add_languages_for_object
+
 
 class QuestionOptionTranslationSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
@@ -84,7 +86,8 @@ class QuestionSerializer(serializers.ModelSerializer):
                     language_id=language_id,
                     value=translation_data['value']
                 )
-
+            add_languages_for_object(option)
+        add_languages_for_object(question)
         return question
 
     @atomic
@@ -99,8 +102,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         instance.group = group
         instance.save()
 
-        # Yangilash: eski tarjimalarni o‘chirib, yangilarini yaratish
-        # instance.translations.all().delete()
         for translation_data in translations_data:
             language_id = translation_data['language']['id']
             if not Language.objects.filter(id=language_id).exists():
@@ -111,7 +112,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                defaults={'name': translation_data['name']}
             )
 
-        if options_data and instance.type == 'select':    
+        if  instance.type == 'select' and  options_data:    
             for option_data in options_data:
                 option_translations = option_data.pop('translations', [])
                 if option_data.get('id'):
@@ -130,3 +131,5 @@ class QuestionSerializer(serializers.ModelSerializer):
         else:
             raise ValidationError("Options data is required for 'select' type questions.")
         return instance
+
+
