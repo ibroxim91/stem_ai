@@ -14,7 +14,7 @@ class ProjectCategory( TimeStampedModel, UserStampedModel):
 class ProjectCategoryTranslation(models.Model):
     project_category = models.ForeignKey(ProjectCategory, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True, default=None)
 
     class Meta:
         unique_together = ('project_category', 'language')

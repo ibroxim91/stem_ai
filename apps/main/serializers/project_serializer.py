@@ -2,6 +2,8 @@ from rest_framework import serializers
 from apps.main.models import ProjectCategory, ProjectCategoryTranslation
 from apps.main.models.languages import Language
 from django.db.transaction import atomic
+from .add_language_for_data import add_languages_for_object
+
 
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -19,7 +21,7 @@ class ProjectCategoryTranslationSerializer(serializers.Serializer):
         model = ProjectCategoryTranslation
         fields = ('name',  'language')
 class ProjectCategorySerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=False)
+    image = serializers.ImageField(required=False, allow_null=True)
     translations = ProjectCategoryTranslationSerializer(many=True, required=False)
     parent_category = serializers.PrimaryKeyRelatedField(
         queryset=ProjectCategory.objects.all(), required=False, allow_null=True
@@ -34,11 +36,17 @@ class ProjectCategorySerializer(serializers.ModelSerializer):
         translations_data = validated_data.pop('translations', [])
         project_category = ProjectCategory.objects.create(**validated_data)
         for trans_data in translations_data:
+            exists = ProjectCategoryTranslation.objects.filter(
+                project_category=project_category,
+                language_id=trans_data['language']['id'],
+                name=trans_data['name']
+            )
             ProjectCategoryTranslation.objects.create(
                 project_category=project_category,
                 language_id=trans_data['language']['id'],
                 name=trans_data['name']
             )
+        add_languages_for_object(project_category)
         return project_category
 
     @atomic

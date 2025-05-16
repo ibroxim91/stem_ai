@@ -4,7 +4,7 @@ from django.db.transaction import atomic
 from rest_framework.exceptions import ValidationError
 from apps.main.models.languages import Language
 from apps.main.models.project_category import ProjectCategory
-
+from .add_language_for_data import add_languages_for_object
 
 
 class QuestionGroupTranslationSerializer(serializers.Serializer):
@@ -30,7 +30,6 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
         project_id = validated_data.pop('category')['id']
         category = ProjectCategory.objects.get(id=int(project_id))
         question_group = QuestionGroup.objects.create(category=category, **validated_data )
-        print("Filter ", QuestionGroupTranslation.objects.filter(question_group=question_group))
         for trans_data in translations_data:
             language_id = trans_data['language']['id']
             if not Language.objects.filter(id=language_id).exists():
@@ -40,6 +39,7 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
                 language_id=language_id,
                 name=trans_data['name']
             )
+        add_languages_for_object(question_group)    
         return question_group
 
     @atomic
@@ -59,3 +59,4 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
             )
 
         return instance
+    

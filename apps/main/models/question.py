@@ -22,7 +22,7 @@ class Question( TimeStampedModel, UserStampedModel):
 class QuestionTranslation(models.Model):
     question = models.ForeignKey(Question, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True, default=None)
     
     class Meta:
         unique_together = ('question', 'language')
@@ -45,7 +45,7 @@ class QuestionOption(TimeStampedModel, UserStampedModel):
 class QuestionOptionTranslation(models.Model):
     question_option = models.ForeignKey(QuestionOption, related_name='translations', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    value = models.CharField(max_length=255) 
+    value = models.CharField(max_length=255, blank=True, null=True, default=None) 
     
     
     class Meta:
