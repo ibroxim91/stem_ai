@@ -7,10 +7,11 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import default_token_generator
-from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
+    permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
 
     def perform_create(self, serializer):

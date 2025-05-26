@@ -6,10 +6,15 @@ from .languages import Language
 
 class QuestionGroup( TimeStampedModel, UserStampedModel):
     category = models.ForeignKey(ProjectCategory, on_delete=models.CASCADE, related_name='question_groups')
-
-    # def __str__(self):
-    #     default_translation = self.translations.filter(language__code='uz').first()
-    #     return default_translation.name if default_translation else 'No name'
+    order = models.PositiveIntegerField(default=0)
+    def __str__(self):
+        default_translation = self.translations.filter(language__code='uz').first()
+        if default_translation and  default_translation.name is not None:
+            return default_translation.name  
+        else:  
+            return f'QuestionGroup {self.id}'
+    class Meta:
+        unique_together = ('category',  'order')    
 
 
 class QuestionGroupTranslation(models.Model):
@@ -19,3 +24,5 @@ class QuestionGroupTranslation(models.Model):
 
     class Meta:
         unique_together = ('question_group', 'language')
+    
+  

@@ -16,6 +16,7 @@ def add_language(sender, instance, created, **kwargs):
             q_category.translations.create(language=instance)
         for question in Question.objects.all():
             question.translations.create(language=instance)   
+            question.prompts.create(language=instance)   
         for option in QuestionOption.objects.all():
             option.translations.create(language=instance)     
 

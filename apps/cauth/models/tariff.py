@@ -1,12 +1,23 @@
 from django.db import models
 
+from apps.main.models.languages import Language
+
+
 
 class Tariff(models.Model):
-    name = models.CharField(max_length=100)  # Gold, Silver, Free va h.k.
-    daily_limit = models.PositiveIntegerField(default=20)
-    price = models.PositiveIntegerField(default=0)
-    active_days = models.PositiveIntegerField(default=30)
-
-
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    tokens = models.IntegerField()
+    
     def __str__(self):
-        return self.name
+        return str(self.price)
+    
+
+class TariffTranslation(models.Model):
+    tarif = models.ForeignKey(Tariff, related_name='translations', on_delete=models.CASCADE)
+    language = models.ForeignKey(Language, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, blank=True, null=True, default=None)
+    description = models.TextField(blank=True)
+
+    class Meta:
+        unique_together = ('tarif', 'language')
+    

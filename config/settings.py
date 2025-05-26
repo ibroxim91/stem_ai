@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     "django_filters",
     "apps.main",
     "apps.cauth",
+    "apps.chat",
+    "apps.order",
+    "apps.clickuz",
 ]
 
 MIDDLEWARE = [
@@ -61,6 +64,8 @@ if DEBUG:
     MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 
 ROOT_URLCONF = "config.base_urls"
+
+FRONTEND_URL = "http://stemai.enginepro.uz/api/v1/auth"
 
 TEMPLATES = [
     {
@@ -97,6 +102,14 @@ SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=5),
     "ROTATE_REFRESH_TOKENS": False,
+}
+
+
+CLICK_SETTINGS = {
+    'service_id':  os.environ.get('SERVICE_ID'),
+    'merchant_id':  os.environ.get('MERCHANT_ID'),
+    'secret_key':  os.environ.get('SECRET_KEY'),
+    'merchant_user_id':  os.environ.get('MERCHANT_USER_ID'),
 }
 
 REST_FRAMEWORK = {
@@ -162,11 +175,13 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
+
+
 EMAIL_HOST = os.environ.get('EMAIL_HOST')
 EMAIL_PORT = os.environ.get('EMAIL_PORT')
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') 
 DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'stemdev@gmail.com')
 
 

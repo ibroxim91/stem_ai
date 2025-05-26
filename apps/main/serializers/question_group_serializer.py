@@ -22,13 +22,15 @@ class QuestionGroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionGroup
-        fields = ('id', 'project',  'translations')
+        fields = ('id', 'project', 'order', 'translations')
 
     @atomic
     def create(self, validated_data):
         translations_data = validated_data.pop('translations', [])
         project_id = validated_data.pop('category')['id']
         category = ProjectCategory.objects.get(id=int(project_id))
+        if QuestionGroup.objects.filter(category=category, order=validated_data.get('order') ):
+            raise ValidationError("Question group with this order already exists.")
         question_group = QuestionGroup.objects.create(category=category, **validated_data )
         for trans_data in translations_data:
             language_id = trans_data['language']['id']

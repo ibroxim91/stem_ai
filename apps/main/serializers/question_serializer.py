@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from apps.main.models import (
-    Question, QuestionTranslation, QuestionOption, QuestionOptionTranslation
+    Question, QuestionTranslation, QuestionOption, QuestionOptionTranslation, QuestionPromptTranslation
 )
 from apps.main.models.languages import Language
 from apps.main.models.question_group import QuestionGroup
@@ -40,27 +40,48 @@ class QuestionTranslationSerializer(serializers.ModelSerializer):
         fields = ['language_id', 'value', 'language_code']
 
 
+class QuestionPromptTranslationSerializer(serializers.ModelSerializer):
+    language_id = serializers.IntegerField(required=True, source='language.id')
+    language_code = serializers.CharField(required=False, source='language.code')
+   
+    class Meta:
+        model = QuestionPromptTranslation
+        fields = ['language_id', 'prompt', 'language_code']
+
+
 class QuestionSerializer(serializers.ModelSerializer):
     translations = QuestionTranslationSerializer(many=True, required=True)
+    prompts = QuestionPromptTranslationSerializer(many=True, write_only=True, required=True)
     options = QuestionOptionSerializer(many=True, required=False)
     group = serializers.PrimaryKeyRelatedField(queryset=QuestionGroup.objects.all())
 
     class Meta:
         model = Question
         fields = [
-            'id', 'group', 'type', 'prompt',
+            'id', 'group', 'type', 'prompts',
             'translations', 'options'
         ]
     @atomic
     def create(self, validated_data):
         translations_data = validated_data.pop('translations')
         options_data = validated_data.pop('options', [])
+        prompts = validated_data.pop('prompts', [])
         group = validated_data.pop('group')
         if not translations_data:
             raise ValidationError("Translations data is required.")
 
         # Create main question
         question = Question.objects.create(group=group, **validated_data)
+
+        for prompt in prompts:
+            language_id = prompt['language']['id']
+            if not Language.objects.filter(id=language_id).exists():
+                raise ValidationError(f"Invalid language id: {language_id}")
+            QuestionPromptTranslation.objects.create(
+                question=question,
+                language_id=language_id,
+                prompt=prompt['prompt']
+            )
 
         # Create translations
         for translation_data in translations_data:
