@@ -13,7 +13,7 @@ deploy-prod-server:
   before_script:
     - apk add --no-cache openssh-client bash curl
     - eval $(ssh-agent -s)
-    - echo "$SSH_PROD_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
     - mkdir -p ~/.ssh
     - chmod 700 ~/.ssh
     - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
@@ -28,7 +28,7 @@ deploy-prod-server:
         echo "Error: Unsupported branch $CI_COMMIT_REF_NAME"
         exit 1
       fi
-    - export CURL_URL="https://gitlab.sarapuloff-team.com/api/v4/projects/$CI_PROJECT_ID/repository/files/$DOCKER_COMPOSE_NAME/raw?ref=$CI_COMMIT_REF_NAME"
+    - export CURL_URL=""
     - export TAG="$([ "$CI_COMMIT_REF_NAME" == "main" ] && echo "latest-${CI_COMMIT_SHORT_SHA}" || echo "stage-${CI_PIPELINE_ID}-${CI_COMMIT_SHORT_SHA}")"
     - |
       ssh -T $PROD_SERVER "
@@ -42,16 +42,11 @@ deploy-prod-server:
         echo "Trying to download: $CURL_URL"
         curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o \"$DOCKER_COMPOSE_FILE\" \"$CURL_URL\"
       
-        echo '=== Replace image tags in compose file ==='
-        for APP_NAME in frontend backend; do
-          sed -i \"s|image: *sarapuloff-\$APP_NAME|image: $CI_REGISTRY_IMAGE/\$APP_NAME:$TAG|g\" \"$DOCKER_COMPOSE_FILE\"
-        done
-      
         echo '=== Docker login... ==='
         echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\" && echo 'Docker login succeeded' || { echo 'Docker login failed'; exit 1; }
       
         echo '=== Stop and remove existing containers ==='
-        docker compose -f \"$DOCKER_COMPOSE_FILE\" down || true
+        docker compose -f . down || true
       
         echo "=== Pull new images ==="
         for APP_NAME in frontend backend; do
@@ -59,7 +54,7 @@ deploy-prod-server:
         done
       
         echo "=== Start new containers ==="
-        docker compose -f \"$DOCKER_COMPOSE_FILE\" up -d
+        docker compose -f . up -d
       "
   environment: production
   needs:
