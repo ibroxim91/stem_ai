@@ -52,6 +52,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -64,6 +65,8 @@ if DEBUG:
     MIDDLEWARE += ["silk.middleware.SilkyMiddleware"]
 
 ROOT_URLCONF = "config.base_urls"
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 FRONTEND_URL = "http://stemai.enginepro.uz/api/v1/auth"
 
