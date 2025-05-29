@@ -29,7 +29,7 @@ deploy-server:
   stage: deploy
 
   variables:
-    DOCKER_COMPOSE_DIR: "~/docker-files"
+    DOCKER_COMPOSE_DIR: "/docker-files"
     DOCKER_COMPOSE_FILE: "$CI_PROJECT_NAME.yml"
 
 
