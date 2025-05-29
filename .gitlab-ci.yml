@@ -6,7 +6,7 @@ stages:
 build-backend:
   stage: build
   variables:
-    APP_NAME: pythonAI
+    APP_NAME: python-ai
   before_script:
     - export TAG="latest-${CI_COMMIT_SHORT_SHA}"
     - echo "Logging into registry $CI_REGISTRY..."
