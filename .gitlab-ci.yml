@@ -32,7 +32,7 @@ build-backend:
 variables:
   DOCKER_COMPOSE_NAME: "docker-compose.yml"
   DOCKER_COMPOSE_FILE: "docker-files"
-  DOCKER_PATH: /root/docker-files/$DOCKER_COMPOSE_NAME
+  DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
 deploy-server:
   stage: deploy
 
