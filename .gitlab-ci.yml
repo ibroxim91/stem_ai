@@ -56,7 +56,7 @@ deploy-server:
       
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
-        curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o "/root/docker-files/\$DOCKER_COMPOSE_NAME"\ \"$DOCKER_COMPOSE_NAME\" \"$CURL_URL\"
+        curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o \"/root/docker-files/$DOCKER_COMPOSE_NAME"\ \"$DOCKER_COMPOSE_NAME\" \"$CURL_URL\"
       
       
         echo '=== Docker login... ==='
