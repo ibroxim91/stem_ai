@@ -35,7 +35,7 @@ variables:
   DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
 deploy-server:
   stage: deploy
-
+ 
   before_script:
     - apk add --no-cache openssh-client bash curl
     - eval $(ssh-agent -s)
