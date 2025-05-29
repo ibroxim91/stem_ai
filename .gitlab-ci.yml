@@ -63,13 +63,13 @@ deploy-server:
         echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\" && echo 'Docker login succeeded' || { echo 'Docker login failed'; exit 1; }
       
         echo '=== Stop and remove existing containers ==='
-        docker compose -f \"$DOCKER_COMPOSE_FILE\" down || true
+        docker compose -f \"docker-files/$DOCKER_COMPOSE_FILE\" down || true
       
         echo "=== Pull new images ==="
           docker pull \"$APP_NAME:$TAG\"
       
         echo "=== Start new containers ==="
-        docker compose -f \"$DOCKER_COMPOSE_FILE\" up -d
+        docker compose -f \"docker-files/$DOCKER_COMPOSE_FILE\" up -d
       "
   needs:
     - build-backend
