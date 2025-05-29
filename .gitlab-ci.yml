@@ -47,7 +47,7 @@ deploy-server:
     - export CURL_URL="https://gitlab.stemdev.uz/api/v4/projects/$CI_PROJECT_ID/repository/files/$DOCKER_COMPOSE_NAME/raw?ref=$CI_COMMIT_REF_NAME"
   script:
     - |
-      ssh -T $DEPLOY_SERVER "
+      ssh -p 222 -T $DEPLOY_SERVER "
         echo '=== Prepare environment ==='
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
