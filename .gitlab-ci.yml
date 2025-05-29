@@ -29,15 +29,11 @@ build-backend:
   tags:
     - docker:dind
 
+variables:
+  DOCKER_COMPOSE_NAME: "docker-compose.yml"
 
 deploy-server:
   stage: deploy
-
-  variables:
-    DOCKER_COMPOSE_DIR: "/docker-files"
-    DOCKER_COMPOSE_FILE: "$CI_PROJECT_NAME.yml"
-
-
 
   before_script:
     - apk add --no-cache openssh-client bash curl
@@ -57,24 +53,23 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
-        mkdir -p "$(dirname "$DOCKER_COMPOSE_DIR")"
       
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
-        curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o \"$DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\" \"$CURL_URL\"
+        curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o \"$DOCKER_COMPOSE_FILE\" \"$CURL_URL\"
       
       
         echo '=== Docker login... ==='
         echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\" && echo 'Docker login succeeded' || { echo 'Docker login failed'; exit 1; }
       
         echo '=== Stop and remove existing containers ==='
-        docker compose -f \"$DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\" down || true
+        docker compose -f \"$DOCKER_COMPOSE_FILE\" down || true
       
         echo "=== Pull new images ==="
           docker pull \"$APP_NAME:$TAG\"
       
         echo "=== Start new containers ==="
-        docker compose -f \"$DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\" up -d
+        docker compose -f \"$DOCKER_COMPOSE_FILE\" up -d
       "
   needs:
     - build-backend
