@@ -65,7 +65,7 @@ deploy-server:
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
         echo \"$ENV_FILE\" > /root/docker-files/.env
-        echo \"MY_IMAGE=$IMAGE_COMPOSE\" >> /root/docker-files/.env
+        echo \"MY_IMAGE=$REGISTRY_IMAGE\" >> /root/docker-files/.env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
         curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o /root/docker-files/docker-compose.yml \"$CURL_URL\"
