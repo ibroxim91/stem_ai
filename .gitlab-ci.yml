@@ -8,10 +8,18 @@ stages:
   - deploy
   
  
+variables:
+  APP_NAME: python-ai
+  DOCKER_COMPOSE_NAME: "docker-compose.yml"
+  DOCKER_COMPOSE_FILE: "docker-files"
+  DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE/$APP_NAME"
+  TAG: "latest-${CI_COMMIT_SHORT_SHA}"
+  BACKEND_NAME: $IMAGE_NAME:$TAG
+
+
 build-backend:
   stage: build
-  variables:
-    APP_NAME: python-ai
   before_script:
     - export TAG="latest-${CI_COMMIT_SHORT_SHA}"
     - echo "Logging into registry $CI_REGISTRY..."
@@ -29,10 +37,8 @@ build-backend:
   tags:
     - docker:dind
 
-variables:
-  DOCKER_COMPOSE_NAME: "docker-compose.yml"
-  DOCKER_COMPOSE_FILE: "docker-files"
-  DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
+
+
 deploy-server:
   stage: deploy
  
@@ -54,6 +60,7 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
+        echo \"MY_IMAGE: $BACKEND_NAME"\
         echo \"$ENV_FILE\" > /root/docker-files/.env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
@@ -67,7 +74,7 @@ deploy-server:
         docker compose -f \"$DOCKER_COMPOSE_FILE/$DOCKER_COMPOSE_NAME\" down || true
       
         echo "=== Pull new images ==="
-          docker pull \"$APP_NAME:$TAG\"
+        docker pull \"$APP_NAME:$TAG\"
       
         echo "=== Start new containers ==="
         docker compose -f \"$DOCKER_COMPOSE_FILE/$DOCKER_COMPOSE_NAME\" --env-file /root/docker-files/.env up -d
