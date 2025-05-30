@@ -60,7 +60,7 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
-        echo \"MY_IMAGE: $BACKEND_NAME"\
+        echo \"MY_IMAGE: $BACKEND_NAME\"
         echo \"$ENV_FILE\" > /root/docker-files/.env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
