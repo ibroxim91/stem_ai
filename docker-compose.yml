@@ -1,8 +1,7 @@
 services:
 
   app:
-    build: .
-    container_name: web_app
+    image: ${MY_IMAGE}
     volumes:
       - .:/app  
     env_file:
