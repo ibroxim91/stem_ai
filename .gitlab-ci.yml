@@ -16,6 +16,7 @@ variables:
   IMAGE_NAME: "$CI_REGISTRY_IMAGE/$APP_NAME"
   TAG: "latest-${CI_COMMIT_SHORT_SHA}"
   REGISTRY_IMAGE: $IMAGE_NAME:$TAG
+  IMAGE_COMPOSE: $APP_NAME:$TAG
 
 
 build-backend:
@@ -52,6 +53,7 @@ deploy-server:
     - export DEPLOY_SERVER="-p 222 $USER_SSH@$IP_SERVER"
     - export DOCKER_COMPOSE_NAME="docker-compose.yml"
     - export IMAGE_NAME=$IMAGE_NAME
+    - export IMAGE_COMPOSE=$IMAGE_COMPOSE
     - export REGISTRY_IMAGE=$REGISTRY_IMAGE
     - export TAG="latest-${CI_COMMIT_SHORT_SHA}"
     - export CURL_URL="https://gitlab.stemdev.uz/api/v4/projects/$CI_PROJECT_ID/repository/files/$DOCKER_COMPOSE_NAME/raw?ref=$CI_COMMIT_REF_NAME"
@@ -62,8 +64,8 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
-        echo \"MY_IMAGE: $IMAGE_NAME\"
         echo \"$ENV_FILE\" > /root/docker-files/.env
+        echo \"MY_IMAGE=$IMAGE_COMPOSE\" >> /root/docker-files/.env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
         curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o /root/docker-files/docker-compose.yml \"$CURL_URL\"
