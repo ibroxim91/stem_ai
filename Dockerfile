@@ -10,4 +10,4 @@ COPY . /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Migrations, collectstatic va serverni ishga tushirish uchun bash script ishlatamiz
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && uvicorn config.asgi:application --host 0.0.0.0 --port 8000"]
+CMD ["sh", "-c", "uvicorn config.asgi:application --host 0.0.0.0 --port 8000"]
