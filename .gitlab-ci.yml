@@ -80,8 +80,10 @@ deploy-server:
         echo "=== Pull new images ==="
         docker pull \"$REGISTRY_IMAGE\"
 
+        cat \"/root/docker-files/$DOCKER_COMPOSE_NAME\"
+
         echo "=== Start new containers ==="
-        docker compose -f \"/root/docker-files/$DOCKER_COMPOSE_NAME\" --env-file /root/docker-files/.env up -d
+        docker compose -f \"/root/docker-files/$DOCKER_COMPOSE_NAME\" --env-file /root/docker-files/.env up -d 
       "
   after_script:
     docker system prune -af
