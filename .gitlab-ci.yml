@@ -54,7 +54,7 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
-        echo \"$ENV_FILE" > .env\
+        echo \"$ENV_FILE\" > .env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
         curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o "/root/docker-files/docker-compose.yml" \"$DOCKER_COMPOSE_NAME\" \"$CURL_URL\"
