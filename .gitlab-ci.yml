@@ -15,7 +15,7 @@ variables:
   DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
   IMAGE_NAME: "$CI_REGISTRY_IMAGE/$APP_NAME"
   TAG: "latest-${CI_COMMIT_SHORT_SHA}"
-  BACKEND_NAME: $IMAGE_NAME:$TAG
+  MY_IMAGE: $IMAGE_NAME:$TAG
 
 
 build-backend:
@@ -60,7 +60,7 @@ deploy-server:
         echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
         echo \"CURL_URL: $CURL_URL\"
         echo \"TAG: $TAG\"
-        echo \"MY_IMAGE: $BACKEND_NAME\"
+        echo \"MY_IMAGE: $MY_IMAGE\"
         echo \"$ENV_FILE\" > /root/docker-files/.env
         echo '=== Download docker-compose file ==='
         echo "Trying to download: $CURL_URL"
