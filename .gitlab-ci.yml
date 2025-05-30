@@ -9,7 +9,7 @@ stages:
   
  
 variables:
-  APP_NAME: python-ai
+  APP_NAME: stemai-backend
   DOCKER_COMPOSE_NAME: "docker-compose.yml"
   DOCKER_COMPOSE_FILE: "docker-files"
   DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
