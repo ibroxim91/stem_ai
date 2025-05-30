@@ -27,6 +27,8 @@ build-backend:
     - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY" && echo "Docker login succeeded" || { echo "Docker login failed"; exit 1; }
   script:
     - echo "Building $APP_NAME image..."
+    - echo "$ENV_FILE" > .env
+    - echo "MY_IMAGE=$REGISTRY_IMAGE" >> .env
     - export IMAGE_NAME="$CI_REGISTRY_IMAGE/$APP_NAME"
     - docker build -t $IMAGE_NAME:$TAG .
     - echo "Pushing $IMAGE_NAME:$TAG..."
