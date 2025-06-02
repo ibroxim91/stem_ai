@@ -1,0 +1,101 @@
+image: docker:latest
+
+services:
+  - docker:dind
+  
+stages:
+  - build
+  - deploy
+  
+ 
+variables:
+  APP_NAME: stemai-backend
+  DOCKER_COMPOSE_NAME: "docker-compose.yml"
+  DOCKER_COMPOSE_FILE: "docker-files"
+  DOCKER_PATH: "/root/docker-files/$DOCKER_COMPOSE_NAME"
+  IMAGE_NAME: "$CI_REGISTRY_IMAGE/$APP_NAME"
+  TAG: "latest-${CI_COMMIT_SHORT_SHA}"
+  REGISTRY_IMAGE: $IMAGE_NAME:$TAG
+  IMAGE_COMPOSE: $APP_NAME:$TAG
+
+
+build-backend:
+  stage: build
+  before_script:
+    - export TAG="latest-${CI_COMMIT_SHORT_SHA}"
+    - echo "Logging into registry $CI_REGISTRY..."
+    - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin "$CI_REGISTRY" && echo "Docker login succeeded" || { echo "Docker login failed"; exit 1; }
+  script:
+    - echo "Building $APP_NAME image..."
+    - echo "$ENV_FILE" > .env
+    - echo "MY_IMAGE=$REGISTRY_IMAGE" >> .env
+    - export IMAGE_NAME="$CI_REGISTRY_IMAGE/$APP_NAME"
+    - docker build -t $IMAGE_NAME:$TAG .
+    - echo "Pushing $IMAGE_NAME:$TAG..."
+    - docker push $IMAGE_NAME:$TAG
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+  allow_failure: false
+  tags:
+    - docker:dind
+
+
+
+deploy-server:
+  stage: deploy
+ 
+  before_script:
+    - apk add --no-cache openssh-client bash curl
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - export DEPLOY_SERVER="-p 222 $USER_SSH@$IP_SERVER"
+    - export DOCKER_COMPOSE_NAME="docker-compose.yml"
+    - export IMAGE_NAME=$IMAGE_NAME
+    - export IMAGE_COMPOSE=$IMAGE_COMPOSE
+    - export REGISTRY_IMAGE=$REGISTRY_IMAGE
+    - export TAG="latest-${CI_COMMIT_SHORT_SHA}"
+    - export CURL_URL="https://gitlab.stemdev.uz/api/v4/projects/$CI_PROJECT_ID/repository/files/$DOCKER_COMPOSE_NAME/raw?ref=$CI_COMMIT_REF_NAME"
+  script:
+    - |
+      ssh -T $DEPLOY_SERVER "
+        echo '=== Prepare environment ==='
+        echo \"DOCKER_COMPOSE: $DOCKER_COMPOSE_DIR/$DOCKER_COMPOSE_FILE\"
+        echo \"CURL_URL: $CURL_URL\"
+        echo \"TAG: $TAG\"
+        echo \"$ENV_FILE\" > /root/docker-files/.env
+        echo \"MY_IMAGE=$REGISTRY_IMAGE\" >> /root/docker-files/.env
+        echo '=== Download docker-compose file ==='
+        echo "Trying to download: $CURL_URL"
+        curl --fail --location --header \"PRIVATE-TOKEN: ${GIT_ACCESS_TOKEN:-$CI_JOB_TOKEN}\" -o /root/docker-files/docker-compose.yml \"$CURL_URL\"
+      
+      
+        echo '=== Docker login... ==='
+        echo \"$CI_REGISTRY_PASSWORD\" | docker login -u \"$CI_REGISTRY_USER\" --password-stdin \"$CI_REGISTRY\" && echo 'Docker login succeeded' || { echo 'Docker login failed'; exit 1; }
+      
+        echo '=== Stop and remove existing containers ==='
+        docker compose -f \"/root/docker-files/$DOCKER_COMPOSE_NAME\" down || true
+      
+        echo "=== Pull new images ==="
+        docker pull \"$REGISTRY_IMAGE\"
+
+        cat \"/root/docker-files/$DOCKER_COMPOSE_NAME\"
+
+        echo "=== Start new containers ==="
+        docker compose -f \"/root/docker-files/$DOCKER_COMPOSE_NAME\" --env-file /root/docker-files/.env up -d 
+      "
+  after_script:
+    docker system prune -af
+  needs:
+    - build-backend
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: manual
+    - when: never
+  allow_failure: false
+  tags:
+    - docker:dind
+  
