@@ -4,6 +4,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from apps.cauth.views.admin_crete_view import AdminUserCreateView
 from apps.cauth.views.me import MeUserView
 from apps.cauth.views.set_language_view import SetLanguageView
+from apps.cauth.views.users_view import UsersView
 
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('admin/create/', AdminUserCreateView.as_view(), name='admin-user-create'),
     path('set-language/', SetLanguageView.as_view(), name='admin-user-create'),
+    path('users/', UsersView.as_view(), name='users'),
 ]
