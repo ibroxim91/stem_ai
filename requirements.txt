@@ -11,5 +11,6 @@ drf-spectacular==0.28.0
 drf-yasg==1.21.7
 Pillow==10.0.1
 uvicorn==0.34.2
+six==1.17.0
 openai
 tiktoken

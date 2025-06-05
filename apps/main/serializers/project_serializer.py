@@ -4,6 +4,7 @@ from apps.main.models.languages import Language
 from django.db.transaction import atomic
 from .add_language_for_data import add_languages_for_object
 from rest_framework.exceptions import ValidationError
+from .image_serializer import Base64ImageField
 
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,7 +30,7 @@ class ProjectCategoryTranslationSerializer(serializers.Serializer):
         model = ProjectCategoryTranslation
         fields = ('name',  'language')
 class ProjectCategorySerializer(serializers.ModelSerializer):
-    image = serializers.ImageField(required=False, allow_null=True)
+    image = Base64ImageField(required=False, allow_null=True)
     translations = ProjectCategoryTranslationSerializer(many=True, required=False)
     prompts = ProjectCategoryPromptTranslationSerializer(many=True, required=True)
     parent_category = serializers.PrimaryKeyRelatedField(
@@ -47,9 +48,6 @@ class ProjectCategorySerializer(serializers.ModelSerializer):
         project_category = ProjectCategory.objects.create(**validated_data)
         for prompt in prompts:
             language_id = prompt['language']['id']
-            print()
-            print("prompt ", prompt)
-            print()
             if not Language.objects.filter(id=language_id).exists():
                 raise ValidationError(f"Invalid language id: {language_id}")
             ProjectPromptTranslation.objects.create(
@@ -75,6 +73,7 @@ class ProjectCategorySerializer(serializers.ModelSerializer):
     @atomic
     def update(self, instance, validated_data):
         translations_data = validated_data.pop('translations', [])
+        prompts = validated_data.pop('prompts', [])
         instance.parent_category = validated_data.get('parent_category', instance.parent_category)
         instance.save()
         for trans_data in translations_data:
@@ -86,5 +85,14 @@ class ProjectCategorySerializer(serializers.ModelSerializer):
                 language_id=language_id,
                 defaults={'name': name}
             )
+        for prompt in prompts:
+            language_id = prompt['language']['id']
+            if not Language.objects.filter(id=language_id).exists():
+                raise ValidationError(f"Invalid language id: {language_id}")
+            ProjectPromptTranslation.objects.update_or_create(
+                project_category=instance,
+                language_id=language_id,
+                defaults={'prompt': prompt['prompt']}
+            )    
 
         return instance

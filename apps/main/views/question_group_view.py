@@ -3,6 +3,9 @@ from apps.main.models import QuestionGroup
 from apps.main.serializers import QuestionGroupSerializer
 from apps.cauth.permissions import AdminPermission
 from rest_framework.permissions import IsAuthenticated
+from apps.main.models.question import Question
+from apps.main.serializers.question_serializer import QuestionSerializer
+
 
 class QuestionGroupViewSet(viewsets.ModelViewSet):
     queryset = QuestionGroup.objects.all()
@@ -19,8 +22,9 @@ class QuestionGroupViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def retrieve(self, request, *args, **kwargs):
-        print("retrieve ", kwargs.get('pk'))
         pk = kwargs.get('pk')
         obj = self.get_object()
-        
-        return super().retrieve(request, *args, **kwargs)
+        questions = Question.objects.filter(group=obj)
+        res = super().retrieve(request, *args, **kwargs)
+        res.data['questions'] = QuestionSerializer(questions, many=True).data
+        return res
