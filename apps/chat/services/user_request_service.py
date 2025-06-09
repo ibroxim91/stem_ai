@@ -39,27 +39,21 @@ class UserRequestService:
             question_group = UserRequestService.get_object(question_group_id , QuestionGroup , model_name = "Question group")
             db_question = UserRequestService.get_object(question_id , Question , model_name = "Question")
             options = question.get('options', [])
+            free_answer = question.get('free_answer', '')
             question_group_name = question_group.translations.filter(language=language).first().name 
             if question_group_name not in question_groups:
                 question_groups.append(question_group_name)
                 prompts = f"{question_group_name}:  "
             else:    
                 prompts = f" "
-            prompts = UserRequestService.generate_prompt(prompts, db_question, language, options, boolean)
+            prompts = UserRequestService.generate_prompt(prompts, db_question, language, options, boolean, free_answer)
             final_prompt += prompts + " "
-        
-        final_prompt += f"{project_prompt} "
+        print()    
+        print("final prompt ", final_prompt)    
+        print()    
         encoding = tiktoken.encoding_for_model("gpt-4o")
         # tokenlar sonini hisoblash
         num_tokens = len(encoding.encode(final_prompt))
-        print()
-        print()
-        print(f"final_prompt  {final_prompt}")
-        print(f"final_prompt Tokenlar soni: {num_tokens}")
-        print(f"User Tokenlar soni: {user.total_tokens}")
-        print()
-        print()
-
         if user.is_active_user and user.total_tokens > 0 :
             if num_tokens + 7 >= user.total_tokens:
                 raise ValidationError(detail={
@@ -67,7 +61,7 @@ class UserRequestService:
                     "message": "User tokens not enough"
                 })    
                     
-            result = OpenAIHelper.ask_openai(final_prompt)
+            result = OpenAIHelper.ask_openai(final_prompt, system_prompt=project_prompt)
             prompt_tokens = result["prompt_tokens"]
             completion_tokens = result["completion_tokens"]
             total_tokens = result["total_tokens"]
@@ -142,7 +136,7 @@ class UserRequestService:
 
     
     @staticmethod
-    def generate_prompt(prompts, question, language: Language , options: list = [], boolean: bool = None):
+    def generate_prompt(prompts, question, language: Language , options: list = [], boolean: bool = None, free_answer: str = ""):
         option_str = ""
         if options:
             for option_id in options:
@@ -151,14 +145,24 @@ class UserRequestService:
                 option_str += f"{option_name}, "
           
         prompt_name = question.prompts.filter(language=language).first()
+        errors = []
         if prompt_name:
-            if boolean in [True, False]:
+            
+            if boolean in [True, False] and question.type == "boolean":
                 if "{%boolean" in prompt_name.prompt:
                     prompts += replace_boolean_tokens(prompt_name.prompt, boolean)
-            
             else:
+                errors.append("Boolean answer not provided")
+
+            if free_answer  and question.type == "free_answer":
+                prompts += " "+ free_answer
+            else:
+                errors.append("Free answer not provided")
+            if question.type == "select":
                 propmt = prompt_name.prompt.replace("{%options%}", option_str)
                 prompts += f" {propmt}"
+        if errors:
+            raise ValidationError(errors)        
         
         return prompts
 

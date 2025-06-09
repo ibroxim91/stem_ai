@@ -6,6 +6,7 @@ from .add_language_for_data import add_languages_for_object
 from rest_framework.exceptions import ValidationError
 from .image_serializer import Base64ImageField
 
+
 class LanguageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Language

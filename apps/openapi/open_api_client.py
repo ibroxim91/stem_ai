@@ -28,8 +28,10 @@ class OpenAIHelper:
         )
 
     @staticmethod
-    def ask_openai(prompts: str, model: str = "gpt-4o") -> dict:
+    def ask_openai(prompts: str, system_prompt: str = None,  model: str = "gpt-4o") -> dict:
         messages = [{"role": "user", "content": prompts}]
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
         response = client.chat.completions.create(
             model=model,
             messages=messages,
@@ -37,6 +39,7 @@ class OpenAIHelper:
             max_tokens=2000,
         )
         print()
+        print("messages ", messages)
         print("response ", response)
         print()
         prompt_tokens = response.usage.prompt_tokens

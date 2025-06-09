@@ -1,0 +1,68 @@
+<input type="file" id="imageInput">
+<button onclick="uploadImage()">Upload</button>
+
+<script>
+    function uploadImage() {
+        const input = document.getElementById("imageInput");
+        const file = input.files[0];
+
+        if (!file) {
+            alert("Iltimos, fayl tanlang!");
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onloadend = function () {
+            const base64Image = reader.result;
+
+            // ❗ Bearer tokenni shu yerga yozing (yoki localStorage, cookie yoki boshqa usul bilan oling)
+            const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQ5OTAyMjc1LCJpYXQiOjE3NDk0NzAyNzUsImp0aSI6ImU0NjYwNmI4Mjk4OTQ4MjhiMTA4ODZhMjYzMzIyYWE0IiwidXNlcl9pZCI6MX0.W8elwo-TYYtdMKGplFPDWO46TWStjcdRq63YXMumm7s"; // <-- bu yerga tokeningizni yozing
+
+            fetch("http://localhost:8000/api/v1/projects/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`  // ← Avtorizatsiya sarlavhasi
+                },
+                body: JSON.stringify({
+                    "parent_category": null,
+                    "image": base64Image,
+                    "prompts": [
+                        {
+                            "language_id": 1,
+                            "language_code": "uz",
+                            "prompt": "prompt 1"
+                        }
+                    ],
+                    "translations": [
+                        {
+                            "language_id": 1,
+                            "language_code": "uz",
+                            "value": "sdfsdfsd"
+                        },
+                        {
+                            "language_id": 2,
+                            "language_code": "en",
+                            "value": "en value fdfd"
+                        }
+                    ]
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Serverdan noto‘g‘ri javob: " + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Yuborildi:", data);
+            })
+            .catch(error => {
+                console.error("Xatolik:", error);
+            });
+        };
+
+        reader.readAsDataURL(file);
+    }
+</script>

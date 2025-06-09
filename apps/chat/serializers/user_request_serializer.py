@@ -4,6 +4,7 @@ class QuestionAnswerSerializer(serializers.Serializer):
     question_group = serializers.IntegerField()
     question_id = serializers.IntegerField()
     boolean_answer = serializers.BooleanField(required=False, allow_null=True)
+    free_answer = serializers.CharField(required=False, allow_null=True)
     options = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )

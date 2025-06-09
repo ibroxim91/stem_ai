@@ -116,12 +116,23 @@ class QuestionSerializer(serializers.ModelSerializer):
         translations_data = validated_data.pop('translations', [])
         options_data = validated_data.pop('options', [])
         group = validated_data.get('group', instance.group)
-
+        prompts = validated_data.pop('prompts', []) 
         # Yangilash: asosiy maydonlar
         instance.type = validated_data.get('type', instance.type)
-        instance.prompt = validated_data.get('prompt', instance.prompt)
+        # instance.prompt = validated_data.get('prompt', instance.prompt)
         instance.group = group
         instance.save()
+
+        for prompt in prompts:
+            language_id = prompt['language']['id']
+            if not Language.objects.filter(id=language_id).exists():
+                raise ValidationError(f"Invalid language id: {language_id}")
+            QuestionPromptTranslation.objects.update_or_create(
+                question=instance,
+                language_id=language_id,
+               defaults={'prompt':prompt }
+            )
+
 
         for translation_data in translations_data:
             language_id = translation_data['language']['id']

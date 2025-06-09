@@ -8,10 +8,11 @@ class Question( TimeStampedModel, UserStampedModel):
     TYPE_CHOICES = (
         ('boolean', 'Boolean'),
         ('select', 'Select'),
+        ('free_answer', 'free_answer'),
     )
 
     group = models.ForeignKey(QuestionGroup, on_delete=models.CASCADE, related_name='questions')
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    type = models.CharField(max_length=15, choices=TYPE_CHOICES)
 
     def __str__(self):
         default_translation = self.translations.filter(language__code='uz').first()
@@ -66,3 +67,7 @@ class QuestionOptionTranslation(models.Model):
         unique_together = ('question_option', 'language')
 
   
+#   {"group":1,"type":"boolean","translations":[{"language_id":1,"language_code":"ru","value":"Question 2"},{"language_id":2,"language_code":"uz","value":"Question 2"}],
+   
+#    "prompts":[{"language_id":1,"language_code":"ru","prompt":"prompt ru"},{"language_id":2,"language_code":"uz","prompt":"prompt ru"}],
+#    "options":[{"translations":[{"language_id":1,"language_code":"ru","value":"ans 1"},{"language_id":2,"language_code":"uz","value":"ans 1"}]},{"translations":[{"language_id":1,"language_code":"ru","value":"ans 2"},{"language_id":2,"language_code":"uz","value":"ans 2"}]}]}
