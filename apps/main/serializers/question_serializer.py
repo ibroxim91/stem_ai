@@ -144,7 +144,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                defaults={'name': translation_data['name']}
             )
 
-        if  instance.type == 'select' and  options_data:    
+        if  instance.type == 'select' and not  options_data:    
             for option_data in options_data:
                 option_translations = option_data.pop('translations', [])
                 if option_data.get('id'):
