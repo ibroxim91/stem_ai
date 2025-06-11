@@ -5,8 +5,10 @@ from apps.cauth.serializers.admin_serializer import AdminCreateUserSerializer
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from apps.cauth.permissions import AdminPermission
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(request=None, summary="Userlarni ko'rish", responses=AdminCreateUserSerializer)
 class UsersView(APIView):
     permission_classes = (AdminPermission,)
 

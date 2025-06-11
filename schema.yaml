@@ -1,0 +1,2482 @@
+openapi: 3.0.3
+info:
+  title: Stem AI api
+  version: 1.0.0
+  description: Stem AI api
+paths:
+  /api/v1/auth/activate/{uidb64}/{token}/:
+    get:
+      operationId: auth_activate_retrieve
+      parameters:
+      - in: path
+        name: token
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: uidb64
+        schema:
+          type: string
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/admin/create/:
+    post:
+      operationId: auth_admin_create_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminCreateUserRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AdminCreateUserRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AdminCreateUserRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminCreateUser'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenObtainPairRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenObtainPair'
+          description: ''
+  /api/v1/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/register/:
+    post:
+      operationId: auth_register_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/v1/auth/set-language/:
+    get:
+      operationId: auth_set_language_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/v1/auth/users/:
+    get:
+      operationId: auth_users_retrieve
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/v1/chat/:
+    get:
+      operationId: chat_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - chat
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserChatList'
+          description: ''
+  /api/v1/chat/{id}/:
+    get:
+      operationId: chat_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - chat
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserChatDetail'
+          description: ''
+  /api/v1/chat/request/:
+    post:
+      operationId: chat_request_create
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRequestRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRequest'
+          description: ''
+  /api/v1/chat/tariffs/:
+    get:
+      operationId: chat_tariffs_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - chat
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTariffList'
+          description: ''
+    post:
+      operationId: chat_tariffs_create
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          description: ''
+  /api/v1/chat/tariffs/{id}/:
+    get:
+      operationId: chat_tariffs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tariff.
+        required: true
+      tags:
+      - chat
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          description: ''
+    put:
+      operationId: chat_tariffs_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tariff.
+        required: true
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TariffRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          description: ''
+    patch:
+      operationId: chat_tariffs_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tariff.
+        required: true
+      tags:
+      - chat
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTariffRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTariffRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTariffRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+          description: ''
+    delete:
+      operationId: chat_tariffs_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tariff.
+        required: true
+      tags:
+      - chat
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/click/:
+    post:
+      operationId: click_create
+      tags:
+      - click
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClickUzRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ClickUzRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ClickUzRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClickUz'
+          description: ''
+  /api/v1/languages/:
+    get:
+      operationId: languages_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - languages
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLanguageList'
+          description: ''
+    post:
+      operationId: languages_create
+      tags:
+      - languages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+          description: ''
+  /api/v1/languages/{id}/:
+    get:
+      operationId: languages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - languages
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+          description: ''
+    put:
+      operationId: languages_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - languages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LanguageRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+          description: ''
+    patch:
+      operationId: languages_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - languages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLanguageRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Language'
+          description: ''
+    delete:
+      operationId: languages_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this language.
+        required: true
+      tags:
+      - languages
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/order/:
+    post:
+      operationId: order_create
+      tags:
+      - order
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OrderRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+          description: ''
+  /api/v1/projects/:
+    get:
+      operationId: projects_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPaginatedCategoryListList'
+          description: Response
+    post:
+      operationId: projects_create
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCategory'
+          description: ''
+  /api/v1/projects/{id}/question-groups/:
+    get:
+      operationId: projects_question_groups_list
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionGroupList'
+          description: ''
+  /api/v1/projects/{id}/:
+    get:
+      operationId: projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project category.
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCategory'
+          description: ''
+    put:
+      operationId: projects_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project category.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectCategoryRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCategory'
+          description: ''
+    patch:
+      operationId: projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project category.
+        required: true
+      tags:
+      - projects
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectCategoryRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectCategoryRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectCategoryRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCategory'
+          description: ''
+    delete:
+      operationId: projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this project category.
+        required: true
+      tags:
+      - projects
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/question/:
+    get:
+      operationId: question_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionList'
+          description: ''
+    post:
+      operationId: question_create
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+  /api/v1/question-group/:
+    get:
+      operationId: question_group_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - question-group
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionGroupList'
+          description: ''
+    post:
+      operationId: question_group_create
+      tags:
+      - question-group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionGroup'
+          description: ''
+  /api/v1/question-group/{id}/:
+    get:
+      operationId: question_group_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question group.
+        required: true
+      tags:
+      - question-group
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionGroup'
+          description: ''
+    put:
+      operationId: question_group_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question group.
+        required: true
+      tags:
+      - question-group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionGroupRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionGroup'
+          description: ''
+    patch:
+      operationId: question_group_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question group.
+        required: true
+      tags:
+      - question-group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionGroupRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionGroupRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionGroupRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionGroup'
+          description: ''
+    delete:
+      operationId: question_group_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question group.
+        required: true
+      tags:
+      - question-group
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/question/{id}/:
+    get:
+      operationId: question_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    put:
+      operationId: question_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    patch:
+      operationId: question_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    delete:
+      operationId: question_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/question/options/:
+    get:
+      operationId: question_options_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionOptionList'
+          description: ''
+    post:
+      operationId: question_options_create
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOption'
+          description: ''
+  /api/v1/question/question-options/{id}/:
+    get:
+      operationId: question_question_options_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOption'
+          description: ''
+    put:
+      operationId: question_question_options_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuestionOptionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOption'
+          description: ''
+    patch:
+      operationId: question_question_options_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionOptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionOptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestionOptionRequest'
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionOption'
+          description: ''
+    delete:
+      operationId: question_question_options_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - question
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      responses:
+        '204':
+          description: No response body
+  /schema/:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      tags:
+      - schema
+      security:
+      - jwtAuth: []
+      - basicAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+components:
+  schemas:
+    AdminCreateUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 14
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        email_verified:
+          type: boolean
+          readOnly: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_active_user:
+          type: boolean
+        total_tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - email_verified
+      - id
+      - username
+    AdminCreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          minLength: 1
+          maxLength: 14
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        password:
+          type: string
+          writeOnly: true
+          minLength: 6
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        is_active_user:
+          type: boolean
+        total_tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+      required:
+      - password
+      - username
+    ClickUz:
+      type: object
+      properties:
+        click_trans_id:
+          type: string
+        service_id:
+          type: string
+        merchant_trans_id:
+          type: string
+        merchant_prepare_id:
+          type: string
+          nullable: true
+        amount:
+          type: string
+        action:
+          type: string
+        error:
+          type: string
+        error_note:
+          type: string
+        sign_time:
+          type: string
+        sign_string:
+          type: string
+        click_paydoc_id:
+          type: string
+      required:
+      - action
+      - amount
+      - click_paydoc_id
+      - click_trans_id
+      - error
+      - error_note
+      - merchant_trans_id
+      - service_id
+      - sign_string
+      - sign_time
+    ClickUzRequest:
+      type: object
+      properties:
+        click_trans_id:
+          type: string
+        service_id:
+          type: string
+        merchant_trans_id:
+          type: string
+        merchant_prepare_id:
+          type: string
+          nullable: true
+        amount:
+          type: string
+        action:
+          type: string
+        error:
+          type: string
+        error_note:
+          type: string
+        sign_time:
+          type: string
+          minLength: 1
+        sign_string:
+          type: string
+        click_paydoc_id:
+          type: string
+      required:
+      - action
+      - amount
+      - click_paydoc_id
+      - click_trans_id
+      - error
+      - error_note
+      - merchant_trans_id
+      - service_id
+      - sign_string
+      - sign_time
+    Language:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          description: uz, ru, en
+          maxLength: 10
+        name:
+          type: string
+          description: O'zbekcha, Русский, English
+          maxLength: 100
+      required:
+      - code
+      - id
+      - name
+    LanguageRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          description: uz, ru, en
+          maxLength: 10
+        name:
+          type: string
+          minLength: 1
+          description: O'zbekcha, Русский, English
+          maxLength: 100
+      required:
+      - code
+      - name
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+          readOnly: true
+        total_price:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+          title: Narxi
+          readOnly: true
+        tariff:
+          type: integer
+          title: Tarif
+        payment_type:
+          type: string
+          maxLength: 20
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        payment_status:
+          allOf:
+          - $ref: '#/components/schemas/PaymentStatusEnum'
+          title: To'lov holati
+          readOnly: true
+      required:
+      - id
+      - payment_status
+      - payment_type
+      - status
+      - tariff
+      - total_price
+      - user
+    OrderRequest:
+      type: object
+      properties:
+        tariff:
+          type: integer
+          title: Tarif
+        payment_type:
+          type: string
+          minLength: 1
+          maxLength: 20
+      required:
+      - payment_type
+      - tariff
+    PaginatedCategoryList:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategory'
+        pagination:
+          $ref: '#/components/schemas/PaginationData'
+      required:
+      - data
+      - pagination
+    PaginatedLanguageList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Language'
+    PaginatedPaginatedCategoryListList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaginatedCategoryList'
+    PaginatedQuestionGroupList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionGroup'
+    PaginatedQuestionList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    PaginatedQuestionOptionList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOption'
+    PaginatedTariffList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tariff'
+    PaginatedUserChatList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserChat'
+    PaginationData:
+      type: object
+      properties:
+        total:
+          type: integer
+        per_page:
+          type: integer
+        current_page:
+          type: integer
+        last_page:
+          type: integer
+        next_page_url:
+          type: string
+          format: uri
+        prev_page_url:
+          type: string
+          format: uri
+      required:
+      - current_page
+      - last_page
+      - per_page
+      - total
+    PatchedLanguageRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+          description: uz, ru, en
+          maxLength: 10
+        name:
+          type: string
+          minLength: 1
+          description: O'zbekcha, Русский, English
+          maxLength: 100
+    PatchedProjectCategoryRequest:
+      type: object
+      properties:
+        parent_category:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryTranslationRequest'
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryPromptTranslationRequest'
+    PatchedQuestionGroupRequest:
+      type: object
+      properties:
+        project:
+          type: integer
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionGroupTranslationRequest'
+    PatchedQuestionOptionRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOptionTranslationRequest'
+    PatchedQuestionRequest:
+      type: object
+      properties:
+        group:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionPromptTranslationRequest'
+          writeOnly: true
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionTranslationRequest'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOptionRequest'
+    PatchedTariffRequest:
+      type: object
+      properties:
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/TariffTranslationRequest'
+    PaymentStatusEnum:
+      enum:
+      - 0
+      - 1
+      type: integer
+      description: |-
+        * `0` - To'lanmadi
+        * `1` - To'landi
+    ProjectCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        parent_category:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: uri
+          nullable: true
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryTranslation'
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryPromptTranslation'
+      required:
+      - id
+      - prompts
+    ProjectCategoryPromptTranslation:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        prompt:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+      required:
+      - language_id
+    ProjectCategoryPromptTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        prompt:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+    ProjectCategoryRequest:
+      type: object
+      properties:
+        parent_category:
+          type: integer
+          nullable: true
+        image:
+          type: string
+          format: binary
+          nullable: true
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryTranslationRequest'
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectCategoryPromptTranslationRequest'
+      required:
+      - prompts
+    ProjectCategoryTranslation:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        language_code:
+          type: string
+          readOnly: true
+        value:
+          type: string
+      required:
+      - language_code
+      - language_id
+      - value
+    ProjectCategoryTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        value:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+      - value
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        group:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionTranslation'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOption'
+      required:
+      - group
+      - id
+      - translations
+      - type
+    QuestionAnswer:
+      type: object
+      properties:
+        question_group:
+          type: integer
+        question_id:
+          type: integer
+        boolean_answer:
+          type: boolean
+          nullable: true
+        free_answer:
+          type: string
+          nullable: true
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - question_group
+      - question_id
+    QuestionAnswerRequest:
+      type: object
+      properties:
+        question_group:
+          type: integer
+        question_id:
+          type: integer
+        boolean_answer:
+          type: boolean
+          nullable: true
+        free_answer:
+          type: string
+          nullable: true
+          minLength: 1
+        options:
+          type: array
+          items:
+            type: integer
+      required:
+      - question_group
+      - question_id
+    QuestionGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        project:
+          type: integer
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionGroupTranslation'
+      required:
+      - id
+      - project
+    QuestionGroupRequest:
+      type: object
+      properties:
+        project:
+          type: integer
+        order:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionGroupTranslationRequest'
+      required:
+      - project
+    QuestionGroupTranslation:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        language_code:
+          type: string
+          readOnly: true
+        value:
+          type: string
+      required:
+      - language_code
+      - language_id
+      - value
+    QuestionGroupTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        value:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+      - value
+    QuestionOption:
+      type: object
+      properties:
+        id:
+          type: integer
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOptionTranslation'
+      required:
+      - translations
+    QuestionOptionRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOptionTranslationRequest'
+      required:
+      - translations
+    QuestionOptionTranslation:
+      type: object
+      properties:
+        id:
+          type: integer
+        language_id:
+          type: integer
+        value:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+      required:
+      - language_id
+    QuestionOptionTranslationRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        language_id:
+          type: integer
+        value:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+    QuestionPromptTranslation:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        prompt:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+      required:
+      - language_id
+    QuestionPromptTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        prompt:
+          type: string
+          nullable: true
+          maxLength: 255
+        language_code:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+    QuestionRequest:
+      type: object
+      properties:
+        group:
+          type: integer
+        type:
+          $ref: '#/components/schemas/TypeEnum'
+        prompts:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionPromptTranslationRequest'
+          writeOnly: true
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionTranslationRequest'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOptionRequest'
+      required:
+      - group
+      - prompts
+      - translations
+      - type
+    QuestionTranslation:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        value:
+          type: string
+        language_code:
+          type: string
+      required:
+      - language_id
+      - value
+    QuestionTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+        value:
+          type: string
+          minLength: 1
+        language_code:
+          type: string
+          minLength: 1
+      required:
+      - language_id
+      - value
+    Register:
+      type: object
+      properties:
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+      required:
+      - email
+      - username
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - email
+      - password
+      - username
+    RoleEnum:
+      enum:
+      - admin
+      - user
+      type: string
+      description: |-
+        * `admin` - Admin
+        * `user` - User
+    StatusEnum:
+      enum:
+      - 1
+      - 2
+      - 3
+      - 4
+      - 0
+      type: integer
+      description: "* `1` - created\n* `2` - on process\n* `3` - verified\n* `4` -\
+        \ delivered\n* `0` - cancelled "
+    Tariff:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/TariffTranslation'
+      required:
+      - id
+      - price
+      - tokens
+      - translations
+    TariffRequest:
+      type: object
+      properties:
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        translations:
+          type: array
+          items:
+            $ref: '#/components/schemas/TariffTranslationRequest'
+      required:
+      - price
+      - tokens
+      - translations
+    TariffTranslation:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        language_code:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+        description:
+          type: string
+      required:
+      - id
+      - language_code
+    TariffTranslationRequest:
+      type: object
+      properties:
+        language_id:
+          type: integer
+          writeOnly: true
+        name:
+          type: string
+          nullable: true
+          maxLength: 255
+        description:
+          type: string
+      required:
+      - language_id
+    TokenObtainPair:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+      - access
+      - refresh
+    TokenObtainPairRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          writeOnly: true
+          minLength: 1
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+      - username
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+      required:
+      - access
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - refresh
+    TypeEnum:
+      enum:
+      - boolean
+      - select
+      - free_answer
+      type: string
+      description: |-
+        * `boolean` - Boolean
+        * `select` - Select
+        * `free_answer` - free_answer
+    UserChat:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        message_count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - title
+    UserChatDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+          nullable: true
+        message_count:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOpenAIChatHistory'
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - messages
+      - title
+    UserOpenAIChatHistory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        model_name:
+          type: string
+          maxLength: 50
+        prompt_tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        completion_tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        total_tokens:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+          nullable: true
+        total_cost_usd:
+          type: string
+        questions:
+          type: string
+          readOnly: true
+        response_text:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - completion_tokens
+      - created_at
+      - id
+      - prompt_tokens
+      - questions
+      - response_text
+      - total_cost_usd
+    UserRequest:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        language_id:
+          type: integer
+          nullable: true
+        chat_id:
+          type: integer
+          nullable: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionAnswer'
+      required:
+      - project_id
+      - questions
+    UserRequestRequest:
+      type: object
+      properties:
+        project_id:
+          type: integer
+        language_id:
+          type: integer
+          nullable: true
+        chat_id:
+          type: integer
+          nullable: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionAnswerRequest'
+      required:
+      - project_id
+      - questions
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

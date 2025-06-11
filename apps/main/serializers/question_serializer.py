@@ -51,9 +51,20 @@ class QuestionPromptTranslationSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     translations = QuestionTranslationSerializer(many=True, required=True)
-    prompts = QuestionPromptTranslationSerializer(many=True, write_only=True, required=True)
+    prompts = QuestionPromptTranslationSerializer(many=True, required=True)
     options = QuestionOptionSerializer(many=True, required=False)
     group = serializers.PrimaryKeyRelatedField(queryset=QuestionGroup.objects.all())
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Request kontekstini olish
+        request = self.context.get('request', None)
+    
+        # Agar request mavjud bo'lsa va foydalanuvchi admin bo'lmasa
+        if request and  request.user.role != 'admin':
+            # prompts maydonini olib tashlash
+            self.fields.pop('prompts', None)
 
     class Meta:
         model = Question
@@ -143,8 +154,9 @@ class QuestionSerializer(serializers.ModelSerializer):
                 language_id=language_id,
                defaults={'name': translation_data['name']}
             )
-
-        if  instance.type == 'select' and not  options_data:    
+        if  instance.type == 'select':
+            if not options_data:    
+                raise ValidationError("Options data is required for 'select' type questions.")
             for option_data in options_data:
                 option_translations = option_data.pop('translations', [])
                 if option_data.get('id'):
@@ -160,8 +172,7 @@ class QuestionSerializer(serializers.ModelSerializer):
                         language_id=language_id,
                         defaults={'value': translation_data['value']}
                     )
-        else:
-            raise ValidationError("Options data is required for 'select' type questions.")
+        
         return instance
 
 

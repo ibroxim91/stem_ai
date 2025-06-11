@@ -3,7 +3,9 @@ from rest_framework.permissions import IsAuthenticated
 from apps.cauth.models import User
 from apps.cauth.serializers.admin_serializer import AdminCreateUserSerializer
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(request=None, summary="Me", responses={200: AdminCreateUserSerializer})
 class MeUserView(APIView):
     permission_classes = (IsAuthenticated,)
 

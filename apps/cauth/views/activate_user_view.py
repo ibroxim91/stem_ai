@@ -7,7 +7,9 @@ from django.contrib.auth.tokens import default_token_generator
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
 
+from drf_spectacular.utils import extend_schema
 
+@extend_schema(summary="Akkauntni aktivlashtrish", description="Akkountni aktivlash uchun")
 class ActivateView(APIView):
     permission_classes = [AllowAny]
     def get(self, request, uidb64, token):

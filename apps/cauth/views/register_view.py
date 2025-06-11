@@ -12,7 +12,10 @@ from rest_framework.permissions import AllowAny
 
 from rest_framework.response import Response
 from rest_framework import status
+from drf_spectacular.utils import extend_schema
 
+
+@extend_schema(request=RegisterSerializer, summary="Ro'yxatdan o'tish",  responses={201: AdminCreateUserSerializer})
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     permission_classes = [AllowAny]

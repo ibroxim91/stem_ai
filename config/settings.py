@@ -97,7 +97,33 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
     "SCHEMA_PATH_PREFIX": "/api/v[0-9]",
     "ENUM_NAME_OVERRIDES": {},
+    'DEFAULT_PAGINATION_CLASS': 'apps.main.paginator.StandardResultsSetPagination',
     "COMPONENT_SPLIT_REQUEST": True,
+    'COMPONENTS': {
+        'schemas': {
+            'CustomPagination': {
+                'type': 'object',
+                'properties': {
+                    'data': {
+                        'type': 'array',
+                        'items': {'type': 'object'}
+                    },
+                    'pagination': {
+                        'type': 'object',
+                        'properties': {
+                            'total': {'type': 'integer'},
+                            'per_page': {'type': 'integer'},
+                            'current_page': {'type': 'integer'},
+                            'last_page': {'type': 'integer'},
+                            'next_page_url': {'type': ['string', 'null']},
+                            'prev_page_url': {'type': ['string', 'null']},
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
 }
 
 
@@ -125,6 +151,8 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+     'DEFAULT_PAGINATION_CLASS': 'apps.main.paginator.StandardResultsSetPagination',
+    'PAGE_SIZE': 10,
 }
 
 AUTH_USER_MODEL = "cauth.User"
