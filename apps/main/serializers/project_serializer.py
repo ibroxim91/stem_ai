@@ -76,6 +76,7 @@ class ProjectCategorySerializer(serializers.ModelSerializer):
         translations_data = validated_data.pop('translations', [])
         prompts = validated_data.pop('prompts', [])
         instance.parent_category = validated_data.get('parent_category', instance.parent_category)
+        instance.image = validated_data.get('image', instance.image)
         instance.save()
         for trans_data in translations_data:
             language_id = trans_data['language']['id']
