@@ -1,14 +1,16 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from apps.main.views.question_view import (
-    QuestionListCreateView, QuestionRetrieveUpdateDestroyView,
+    QuestionView, QuestionRetrieveUpdateDestroyView,
     QuestionOptionListCreateView, QuestionOptionRetrieveUpdateDestroyView
 )
 
+router = DefaultRouter()
+
+router.register(r'', QuestionView, basename='question-group')
+
 
 urlpatterns = [
-    path('', QuestionListCreateView.as_view(), name='question-list-create'),
-    path('<int:pk>/', QuestionRetrieveUpdateDestroyView.as_view(), name='question-detail'),
-    
-    path('options/', QuestionOptionListCreateView.as_view(), name='question-option-list-create'),
-    path('question-options/<int:pk>/', QuestionOptionRetrieveUpdateDestroyView.as_view(), name='question-option-detail'),
+    path('', include(router.urls)),
+
 ]

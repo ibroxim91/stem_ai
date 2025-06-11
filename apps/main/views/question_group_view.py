@@ -6,8 +6,12 @@ from apps.cauth.permissions import AdminPermission
 from rest_framework.permissions import IsAuthenticated
 from apps.main.models.question import Question
 from apps.main.serializers.question_serializer import QuestionSerializer
-
 from rest_framework.pagination import PageNumberPagination
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
+
 
 class QuestionPagination(PageNumberPagination):
     page_size = 25
@@ -27,7 +31,38 @@ class QuestionPagination(PageNumberPagination):
             }
         }
     
-    
+
+@extend_schema(
+    summary="Questions",
+    description="Kategoriyalar ro'yxati",
+   
+)
+@extend_schema_view(
+    list=extend_schema(
+        summary="Kategoriyalar ro'yxati",
+        description="Barcha mavjud Kategoriyalarni paginatsiya bilan qaytaradi",    
+    ),
+    create=extend_schema(
+        summary="Kategoriya qo'shish (Admin)",
+        description="Faqat adminlar yangi Kategoriya qo'shishi mumkin"
+    ),
+    retrieve=extend_schema(
+        summary="Kategoriyani ko'rish",
+        description="Kategoriya ID si orqali bitta Kategoriyani ko'rish"
+    ),
+    update=extend_schema(
+        summary="Kategoriyani to'liq yangilash (Admin)",
+        description="Faqat adminlar Kategoriya ma'lumotlarini to'liq yangilashi mumkin"
+    ),
+    partial_update=extend_schema(
+        summary="Kategoriyani qisman yangilash (Admin)",
+        description="Faqat adminlar Kategoriya ma'lumotlarini qisman yangilashi mumkin"
+    ),
+    destroy=extend_schema(
+        summary="Kategoriyani o'chirish (Admin)",
+        description="Faqat adminlar Kategoriyani o'chirishi mumkin"
+    ),
+)    
 class QuestionGroupViewSet(viewsets.ModelViewSet):
     queryset = QuestionGroup.objects.all()
     serializer_class = QuestionGroupSerializer

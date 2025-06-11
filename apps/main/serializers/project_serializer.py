@@ -31,7 +31,7 @@ class ProjectCategoryTranslationSerializer(serializers.Serializer):
         model = ProjectCategoryTranslation
         fields = ('name',  'language')
 class ProjectCategorySerializer(serializers.ModelSerializer):
-    image = Base64ImageField(required=False, allow_null=True)
+    image = Base64ImageField(required=False, allow_null=True, help_text='Base64 encoded image max size 1MB formats [jpg, png, jpeg]')
     translations = ProjectCategoryTranslationSerializer(many=True, required=False)
     prompts = ProjectCategoryPromptTranslationSerializer(many=True, required=True)
     parent_category = serializers.PrimaryKeyRelatedField(
