@@ -82,15 +82,17 @@ class UserRequestService:
                 "chat": {
                     "id": chat.id,
                     "title": chat.title,
-                    "created_at": chat.created_at
+                    "created_at": chat.created_at,
+                    'message_id':None
                 }
             }
             chat_history = UserRequestService.save_chat_history(prompt_text=final_prompt, chat=chat, data=result)
-            UserRequestService.save_chat_history_questions(chat_history, chat_history_question)
+            chat_history_question = UserRequestService.save_chat_history_questions(chat_history, chat_history_question)
             user.total_tokens -= total_tokens
             if user.total_tokens <= 0:
                 user.is_active_user = False
             user.save()
+            result['chat']['message_id'] = chat_history_question.id
             return result
         else:
             raise ValidationError({
@@ -153,15 +155,6 @@ class UserRequestService:
           
         prompt_name = question.prompts.filter(language=language).first()
         errors = []
-        print()
-        print("boolean ", boolean)
-        print("prompt_name ", prompt_name)
-        print("free_answer ", free_answer)
-        print(" prompt_name.prompt ",  prompt_name.prompt)
-        print("{%boolean in prompt_name.prompt ", "{%boolean" in prompt_name.prompt)
-        print("question.type  ", question.type )
-        print()
-        print()
         if prompt_name:
             if  question.type == "boolean":
                 if boolean in [True, False] :

@@ -18,3 +18,19 @@ class UserRequestSerializer(serializers.Serializer):
     def create(self, validated_data):
         
         return validated_data
+
+
+class UserResponseChatSerializer(serializers.Serializer):
+    id = serializers.IntegerField(help_text='Chat ID')
+    title = serializers.CharField(help_text='Chat title')
+    created_at = serializers.DateTimeField(help_text='Chat creation date')
+    message_id = serializers.IntegerField(help_text='Message ID')
+
+class UserResponseSerializer(serializers.Serializer):
+    result = serializers.CharField()
+    prompt_tokens = serializers.IntegerField(required=False, allow_null=True)
+    completion_tokens = serializers.IntegerField(required=False, allow_null=True)
+    total_tokens = serializers.IntegerField(required=False, allow_null=True)
+    total_cost_usd = serializers.IntegerField(required=False, allow_null=True)
+    chat = UserResponseChatSerializer(many=False)
+

@@ -43,3 +43,8 @@ class UserChatDetailSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'title', 'description', 'message_count', 'created_at', 'messages'
         ]
+
+
+class UserMessageToPdfSerializer(serializers.Serializer):
+    message_id = serializers.IntegerField()
+    file = serializers.FileField()

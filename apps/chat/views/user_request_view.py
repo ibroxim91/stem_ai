@@ -1,12 +1,14 @@
 from rest_framework.views import APIView
 from apps.chat.models.user_chat import UserChat
-from apps.chat.serializers.user_request_serializer import UserRequestSerializer
+from apps.chat.serializers.user_request_serializer import UserRequestSerializer, UserResponseSerializer
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from apps.chat.services.user_request_service import UserRequestService
+from drf_spectacular.utils import extend_schema
 
 
+@extend_schema(tags=["Chat"], summary="User request", request=UserRequestSerializer, responses=UserResponseSerializer)
 class UserRequestView(APIView):
     serializer_class = UserRequestSerializer
     permission_classes = [IsAuthenticated]

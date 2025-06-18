@@ -3,6 +3,10 @@ from apps.chat.models.user_chat import UserChat
 from apps.chat.serializers.chat_serializer import UserChatSerializer, UserChatDetailSerializer
 
 
+from drf_spectacular.utils import extend_schema
+
+
+@extend_schema(tags=["Chat"], summary="User chats", request=None, responses=UserChatSerializer)
 class UserChatListView(generics.ListAPIView):
     serializer_class = UserChatSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -11,6 +15,7 @@ class UserChatListView(generics.ListAPIView):
         return UserChat.objects.filter(user=self.request.user)
 
 
+@extend_schema(tags=["Chat"], summary="User chat detail", request=None, responses=UserChatDetailSerializer)
 class UserChatDetailView(generics.RetrieveAPIView):
     serializer_class = UserChatDetailSerializer
     permission_classes = [permissions.IsAuthenticated]
