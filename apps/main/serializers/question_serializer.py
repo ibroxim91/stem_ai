@@ -23,11 +23,12 @@ class QuestionOptionTranslationSerializer(serializers.ModelSerializer):
 
 class QuestionOptionSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(required=False)
+    bool = serializers.BooleanField(required=False, allow_null=True, source='boolean')
     translations = QuestionOptionTranslationSerializer(many=True)
 
     class Meta:
         model = QuestionOption
-        fields = ['id', 'translations']
+        fields = ['id', 'translations', 'bool']
 
 
 class QuestionTranslationSerializer(serializers.ModelSerializer):
@@ -63,15 +64,6 @@ class QuestionSerializer(serializers.ModelSerializer):
         else:
             fields['prompts'] = QuestionPromptTranslationSerializer(many=True, required=True)
         return fields
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     # Request kontekstini olish
-    #     request = self.context.get('request', None)
-    
-    #     # Agar request mavjud bo'lsa va foydalanuvchi admin bo'lmasa
-    #     if request and  request.user.role != 'admin':
-    #         # prompts maydonini olib tashlash
-    #         self.fields.pop('prompts', None)
 
     class Meta:
         model = Question
@@ -84,11 +76,30 @@ class QuestionSerializer(serializers.ModelSerializer):
         translations_data = validated_data.pop('translations')
         options_data = validated_data.pop('options', [])
         prompts = validated_data.pop('prompts', [])
+        question_type = validated_data.get('type', None)
+        print()
+        print("options_data", options_data)
+        print()
+        if question_type not in [i[0] for i in Question.TYPE_CHOICES]:
+            raise ValidationError("Invalid question type.")
         group = validated_data.pop('group')
         if not translations_data:
             raise ValidationError("Translations data is required.")
 
         # Create main question
+        if question_type == "select" or question_type == "boolean":
+            if not options_data :
+                raise ValidationError("Options data is required for select type questions.")
+        if question_type == "boolean":
+            if  len(options_data) != 2:
+                raise ValidationError("Boolean questions must have exactly 2 options.")
+            true_answer = 0
+            for i in range(len(options_data)):
+                if options_data[i]['boolean'] == True:
+                    true_answer += 1
+            if true_answer != 1:
+                raise ValidationError("Boolean questions must have exactly 2 options with values: True and False.")        
+            
         question = Question.objects.create(group=group, **validated_data)
 
         for prompt in prompts:
@@ -115,7 +126,8 @@ class QuestionSerializer(serializers.ModelSerializer):
         # Create options and their translations
         for option_data in options_data:
             option_translations = option_data.pop('translations', [])
-            option = QuestionOption.objects.create(question=question)
+            boolean = option_data.pop('boolean', None)
+            option = QuestionOption.objects.create(question=question, boolean=boolean)
             for translation_data in option_translations:
                 language_id = translation_data['language_id']
                 if not Language.objects.filter(id=language_id).exists():
@@ -182,4 +194,13 @@ class QuestionSerializer(serializers.ModelSerializer):
         
         return instance
 
+# Type: select Prompt
+# "Количество страниц будет {%options%}",
 
+# Type: boolean Prompt
+                                    # True                     False
+# "Платежная система {%boolean:Должна быть подключена;Не должна быть подключена%}.
+
+
+# Type: free_answer Prompt
+# "Платежная система: {%free_answer%}.

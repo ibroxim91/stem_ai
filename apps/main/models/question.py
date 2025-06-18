@@ -46,6 +46,7 @@ class QuestionOption(TimeStampedModel, UserStampedModel):
         on_delete=models.CASCADE,
         related_name='options'
     )
+    boolean = models.BooleanField(null=True, blank=True, default=False)
 
 
     def __str__(self):
@@ -65,9 +66,3 @@ class QuestionOptionTranslation(models.Model):
     
     class Meta:
         unique_together = ('question_option', 'language')
-
-  
-#   {"group":1,"type":"boolean","translations":[{"language_id":1,"language_code":"ru","value":"Question 2"},{"language_id":2,"language_code":"uz","value":"Question 2"}],
-   
-#    "prompts":[{"language_id":1,"language_code":"ru","prompt":"prompt ru"},{"language_id":2,"language_code":"uz","prompt":"prompt ru"}],
-#    "options":[{"translations":[{"language_id":1,"language_code":"ru","value":"ans 1"},{"language_id":2,"language_code":"uz","value":"ans 1"}]},{"translations":[{"language_id":1,"language_code":"ru","value":"ans 2"},{"language_id":2,"language_code":"uz","value":"ans 2"}]}]}

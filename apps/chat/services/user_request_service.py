@@ -26,8 +26,15 @@ class UserRequestService:
             raise ValidationError(f"User language not found")  
         if not chat:
             chat = UserRequestService.create_chat_for_user(user, project) 
-        project_name = project.translations.filter(language=language).first().name        
-        project_prompt = project.prompts.filter(language=language).first().prompt        
+        project_name = project.translations.filter(language=language).first()
+        if not project_name:
+            raise ValidationError(f"Project name not found")
+        project_name = project_name.name        
+        project_prompt = project.prompts.filter(language=language).first()
+        if not project_prompt: 
+            raise ValidationError(f"Project prompt not found")
+        project_prompt = project_prompt.prompt        
+        
         final_prompt = f"Направление: {project_name} " 
         question_groups = []
         chat_history_question = []
@@ -146,21 +153,34 @@ class UserRequestService:
           
         prompt_name = question.prompts.filter(language=language).first()
         errors = []
+        print()
+        print("boolean ", boolean)
+        print("prompt_name ", prompt_name)
+        print("free_answer ", free_answer)
+        print(" prompt_name.prompt ",  prompt_name.prompt)
+        print("{%boolean in prompt_name.prompt ", "{%boolean" in prompt_name.prompt)
+        print("question.type  ", question.type )
+        print()
+        print()
         if prompt_name:
+            if  question.type == "boolean":
+                if boolean in [True, False] :
+                    if "{%boolean" in prompt_name.prompt:
+                        prompts += replace_boolean_tokens(prompt_name.prompt, boolean)
+                else:
+                    errors.append("Boolean answer not provided")
+            if question.type == "free_answer":    
+                if free_answer:
+                    prompts += " "+ free_answer
+                else:
+                    errors.append("Free answer not provided")
             
-            if boolean in [True, False] and question.type == "boolean":
-                if "{%boolean" in prompt_name.prompt:
-                    prompts += replace_boolean_tokens(prompt_name.prompt, boolean)
-            else:
-                errors.append("Boolean answer not provided")
-
-            if free_answer  and question.type == "free_answer":
-                prompts += " "+ free_answer
-            else:
-                errors.append("Free answer not provided")
             if question.type == "select":
-                propmt = prompt_name.prompt.replace("{%options%}", option_str)
-                prompts += f" {propmt}"
+                if not option_str:
+                    errors.append("Options not provided")
+                else:    
+                    propmt = prompt_name.prompt.replace("{%options%}", option_str)
+                    prompts += f" {propmt}"
         if errors:
             raise ValidationError(errors)        
         
