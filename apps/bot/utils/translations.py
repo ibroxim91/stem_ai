@@ -50,6 +50,6 @@ def get_user_language(telegram_id: int) -> str:
     return user.language
 
 
-def get_translated_buttons(key: str) -> list[str]:
+def get_translated_buttons(key: str) -> list:
     langs = Language.objects.all()
     return [ get_button_names(lang, key) for lang in langs]
