@@ -29,3 +29,12 @@ class UserChatDetailView(generics.RetrieveAPIView):
         context['user'] = self.request.user
         context['language'] = getattr(self.request.user, 'language', None)
         return context
+
+
+@extend_schema(tags=["Chat"], summary="User chat delete", request=None, responses=None)
+class UserChatDeleteView(generics.DestroyAPIView):
+    queryset = UserChat.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return UserChat.objects.filter(user=self.request.user)

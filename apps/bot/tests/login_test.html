@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kirish sahifasi</title>
+</head>
+<body>
+  <h1>Kirish jarayoni...</h1>
+  <div id="result"></div>
+
+  <script>
+    // URLdan tokenni ajratib olish
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token'); // ?token=xyz123
+
+    if (!token) {
+      document.getElementById('result').innerText = '❌ Token topilmadi!';
+    } else {
+      // Tokenni POST so'rovi orqali backendga yuborish
+      fetch('http://localhost:8000/api/v1/auth/telegram/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token: token }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.access) {
+          document.getElementById('result').innerHTML = `
+            ✅ Kirish muvaffaqiyatli! <br/>
+            <strong>Access token:</strong> ${data.access} <br/>
+            <strong>Refresh token:</strong> ${data.refresh}
+          `;
+        } else {
+          document.getElementById('result').innerText = '❌ Noto‘g‘ri token!';
+        }
+      })
+      .catch(error => {
+        console.error('Xatolik:', error);
+        document.getElementById('result').innerText = '❌ So‘rov yuborishda xatolik!';
+      });
+    }
+  </script>
+</body>
+</html>

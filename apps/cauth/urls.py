@@ -5,10 +5,10 @@ from apps.cauth.views.admin_crete_view import AdminUserCreateView
 from apps.cauth.views.me import MeUserView
 from apps.cauth.views.password_change_view import ChangePasswordView
 from apps.cauth.views.password_rest_view import PasswordResetRequestView
-from apps.cauth.views.refresh_token_view import MyTokenRefreshView
 from apps.cauth.views.set_language_view import SetLanguageView
-from apps.cauth.views.token_view import MyTokenObtainPairView
 from apps.cauth.views.users_view import UsersView
+from apps.cauth.views.token_view import MyTokenObtainPairView
+from apps.cauth.views.refresh_token_view import MyTokenRefreshView
 
 
 urlpatterns = [

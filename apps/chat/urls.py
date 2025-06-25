@@ -2,7 +2,7 @@ from django.urls import path, include
 from apps.chat.views.message_to_pdf_view import UserMessageToPdfView
 from apps.chat.views.user_request_view import UserRequestView
 from django.urls import path
-from apps.chat.views.chat_view import UserChatListView, UserChatDetailView
+from apps.chat.views.chat_view import UserChatDeleteView, UserChatListView, UserChatDetailView
 from rest_framework.routers import DefaultRouter
 from apps.chat.views.tarif_view import TariffViewSet
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('request/', UserRequestView.as_view(), name='user-request'),
     path('', UserChatListView.as_view(), name='userchat-list'),
     path('<int:pk>/', UserChatDetailView.as_view(), name='userchat-detail'),
+    path('<int:pk>/delete/', UserChatDeleteView.as_view(), name='userchat-delete'),
     path('message/<int:pk>/to_pdf',  UserMessageToPdfView.as_view(), name='userchat-to_pdf'),
     path('', include(router.urls)),
 ]

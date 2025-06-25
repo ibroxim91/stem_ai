@@ -9,6 +9,7 @@ class User(AbstractUser):
         ADMIN = 'admin', 'Admin'
         USER = 'user', 'User'
 
+    telegram_id = models.BigIntegerField(unique=True, null=True, blank=True)
     role = models.CharField(max_length=10, choices=Role.choices, default=Role.USER)
     phone = models.CharField(max_length=14, default="")
     balance = models.IntegerField(default=0)

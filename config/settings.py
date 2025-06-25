@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.chat",
     "apps.order",
     "apps.clickuz",
+    "apps.bot",
 ]
 
 MIDDLEWARE = [

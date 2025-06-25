@@ -14,3 +14,4 @@ uvicorn==0.34.2
 six==1.17.0
 openai
 tiktoken
+reportlab==4.4.2
