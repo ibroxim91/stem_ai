@@ -11,6 +11,7 @@ urlpatterns = [
     path('chat/', include('apps.chat.urls')),
     path('order/', include('apps.order.urls')),
     path('click/', include('apps.clickuz.urls')),
+      path('bot/', include('apps.bot.urls')),
     # path('main/', include('apps.main.urls')),
     
 ]
