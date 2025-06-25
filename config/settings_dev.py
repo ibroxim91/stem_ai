@@ -10,3 +10,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+FRONT_URL = "https://sinaps-ai-client.vercel.app"
+FRONT_TELEGRAM_AUTH_URL = "/auth/telegram/token"

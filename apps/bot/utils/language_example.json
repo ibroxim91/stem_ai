@@ -1,0 +1,27 @@
+{
+  "start.register_text": "Assalomu alaykum!\nRo'yxatdan o'tish  uchun quyidagi  tugmani bosing",
+  "start.login_text": "Assalomu alaykum!\nTizimga kirish uchun quyidagi  tugmani bosing",
+  "register.request_name": "Iltimos, to'liq ismingizni kiriting:",
+  "register.invalid_name": "❌ Ism kamida 3 ta belgidan iborat bo‘lishi kerak. Qayta urinib ko‘ring:",
+  "register.invalid": "🗒 Iltimos Ro'yxatdan o'tishni yakunlang",
+  "register.request_surname": "Familyangizni kiriting:",
+  "register.invalid_surname": "❌ Familyan kamida 5 ta belgidan iborat bo‘lishi kerak. Qayta urinib ko‘ring:",
+  "register.request_phone": "Telefon raqamingizni yuboring:",
+  "register.phone_error": "❌ Telefon raqamini olishda xatolik. Qayta urinib ko‘ring.",
+  "register.request_language": "Tilni  tanlang:",
+  "register.language_error": "❌ Til tanlanmadi!",
+  "register.success": "✅ Muvaffaqiyatli ro'yxatdan o'tdingiz!\n\n👇 Kirish uchun tugmani bosing:",
+  "auth.login_text": "👇 Kirish uchun tugmani bosing",
+  "fallback.text": "👇 Quyidagi tugmalardan birini tanlang",
+  "keyboard.register": "📝 Ro'yxatdan o'tish",
+  "keyboard.login": "✅Tizimga kirish",
+  "keyboard.send_phone": "📱 Raqamni yuborish",
+  "keyboard.language_not_loaded": "❌ Tillar yuklanmadi",
+  "keyboard.login_button": "🔓 Kirish",
+  "language.selected": "✅  Til tanlandi",
+  "language.not_selected": "🌎 Iltimos, tilni tanlang"
+}
+
+
+
+

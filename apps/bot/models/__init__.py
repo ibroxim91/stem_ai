@@ -1,0 +1,1 @@
+from .bot_translation_model import BotTranslation
