@@ -23,7 +23,18 @@ DEBUG = os.getenv("DEBUG", False)
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-@@)#c61ksll!x#h$9t%16epf)xl!ovb0=5@211yb-a_9byab#6")
 
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "*"
+    "stemai.enginepro.uz",
+    "admin.stemai.enginepro.uz",
+]
+
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://stemai.enginepro.uz",
+    "https://admin.stemai.enginepro.uz",
+]
+
 
 
 # Application definition
