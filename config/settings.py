@@ -24,7 +24,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-@@)#c61ksll!x#h$9t%16epf)x
 
 
 ALLOWED_HOSTS = [
-    "*"
+    "*",
     "stemai.enginepro.uz",
     "admin.stemai.enginepro.uz",
 ]
