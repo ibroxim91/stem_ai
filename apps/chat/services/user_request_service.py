@@ -137,7 +137,8 @@ class UserRequestService:
             chat_count = f"({chat_count})"
         else:
             chat_count = ""
-        title = f"{project.translations.filter(language=user.language).first().name} {chat_count}"
+        t = project.translations.filter(language=user.language).first().name if project.translations.filter(language=user.language).first() else "Chat "    
+        title = f"{t} {chat_count}"
         return UserChat.objects.create(user=user, project=project, title=title)
     
     
