@@ -26,7 +26,7 @@ class ProjectCategoryTranslation(models.Model):
 class ProjectPromptTranslation(models.Model):
     project_category = models.ForeignKey(ProjectCategory, related_name='prompts', on_delete=models.CASCADE)
     language = models.ForeignKey(Language, on_delete=models.CASCADE)
-    prompt = models.CharField(max_length=255, blank=True, null=True, default=None)
+    prompt = models.CharField(max_length=1000, blank=True, null=True, default=None)
     
     class Meta:
         unique_together = ('project_category', 'language')
