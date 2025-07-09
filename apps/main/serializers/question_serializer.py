@@ -56,17 +56,17 @@ class QuestionSerializer(serializers.ModelSerializer):
     options = QuestionOptionSerializer(many=True, required=False)
     group = serializers.PrimaryKeyRelatedField(queryset=QuestionGroup.objects.all())
 
-    def get_fields(self):
-        fields = super().get_fields()
-        request = self.context.get('request', None)
-        print()
-        print("request Role", request.user.role)
-        print()
-        if request and getattr(request.user, 'role', None) != 'admin':
-            fields.pop('prompts', None)
-        else:
-            fields['prompts'] = QuestionPromptTranslationSerializer(many=True, required=True)
-        return fields
+    # def get_fields(self):
+    #     fields = super().get_fields()
+    #     request = self.context.get('request', None)
+    #     print()
+    #     print("request Role", request.user.role)
+    #     print()
+    #     if request and getattr(request.user, 'role', None) != 'admin':
+    #         fields.pop('prompts', None)
+    #     else:
+    #         fields['prompts'] = QuestionPromptTranslationSerializer(many=True, required=True)
+    #     return fields
     class Meta:
         model = Question
         fields = [
