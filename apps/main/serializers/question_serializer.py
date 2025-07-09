@@ -162,7 +162,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             QuestionPromptTranslation.objects.update_or_create(
                 question=instance,
                 language_id=language_id,
-               defaults={'prompt':prompt }
+               defaults={'prompt':prompt['prompt'] }
             )
 
 
