@@ -59,12 +59,14 @@ class QuestionSerializer(serializers.ModelSerializer):
     def get_fields(self):
         fields = super().get_fields()
         request = self.context.get('request', None)
+        print()
+        print("request Role", request.user.role)
+        print()
         if request and getattr(request.user, 'role', None) != 'admin':
             fields.pop('prompts', None)
         else:
             fields['prompts'] = QuestionPromptTranslationSerializer(many=True, required=True)
         return fields
-
     class Meta:
         model = Question
         fields = [
@@ -78,7 +80,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         prompts = validated_data.pop('prompts', [])
         question_type = validated_data.get('type', None)
         print()
-        print("options_data", options_data)
+        print("prompts", prompts)
         print()
         if question_type not in [i[0] for i in Question.TYPE_CHOICES]:
             raise ValidationError("Invalid question type.")
